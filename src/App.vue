@@ -16,6 +16,10 @@ const splashVisible = computed(() => {
 <style>
 /* ===== Scrollbar CSS ===== */
 /* Firefox */
+body {
+  height: 100vh;
+  overflow-y: hidden;
+}
 * {
   scrollbar-width: auto;
   scrollbar-color: #8f54a0 #ffffff;

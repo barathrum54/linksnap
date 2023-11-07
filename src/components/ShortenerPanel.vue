@@ -1,7 +1,11 @@
 <template>
   <v-row class="shortener-panel-wrapper">
     <v-col class="d-flex justify-center align-center" cols="12" lg="12">
-      <img src="@/assets/logo.png" alt="" />
+      <img
+        src="@/assets/logo.png"
+        style="width: 100%; max-width: 500px; object-fit: contain"
+        alt=""
+      />
     </v-col>
 
     <v-col cols="12" lg="6">
@@ -52,7 +56,7 @@
               >2-) Make your link easier than random strings.</v-card-title
             >
             <v-card-subtitle class="headline"
-              >Your link will be: www.linksnap.com/{{
+              >Your link will be: https://linksnap-theta.vercel.app/{{
                 customizedLink || shortenedLink
               }}</v-card-subtitle
             >

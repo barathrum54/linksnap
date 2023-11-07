@@ -1,6 +1,10 @@
 <template>
   <div class="splash-screen" v-if="show">
-    <img src="@/assets/logo.png" alt="" />
+    <img
+      src="@/assets/logo.png"
+      style="object-fit: contain; width: 100%; max-width: 300px"
+      alt=""
+    />
     <div></div>
     <div></div>
   </div>

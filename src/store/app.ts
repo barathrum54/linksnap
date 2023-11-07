@@ -9,7 +9,7 @@ export const useAppStore = defineStore("app", {
     linkCustomization: "",
     outputLink: "",
     preparedLink: "",
-    baseLink: "localhost:3000",
+    baseLink: "https://linksnap-theta.vercel.app/",
     machineStates: {
       linkMachineWorking: false,
       snapMachineWorking: false,
