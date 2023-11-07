@@ -74,6 +74,10 @@ const snapMachineText = computed(() => {
   if (snapMachineState.value.snapMachineDone) {
     setBlinkerColor("green");
     return "DONE";
+  }
+  if (snapMachineState.value.snapMachineWaiting) {
+    setBlinkerColor("red");
+    return "WAITING";
   } else {
     setBlinkerColor("");
     stopLights();

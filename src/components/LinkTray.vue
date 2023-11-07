@@ -4,8 +4,8 @@
       <div class="tray-base"></div>
     </div>
     <div class="link-path">
-      <div class="link-container">
-        <span> www.google.com </span>
+      <div class="link-container" v-if="shortenedLink">
+        <span> {{ shortenedLink }} </span>
       </div>
     </div>
     <div class="end-structure"></div>
@@ -14,12 +14,13 @@
 
 <script setup lang="ts">
 import { useAppStore } from "@/store/app";
+import { ref } from "vue";
 import { computed } from "vue";
 
 const appStore = useAppStore();
+const shortenedLink = computed(() => appStore.outputLink);
 const isLinkTrayWorking = computed(() => {
   const state = appStore.machineStates.linkTrayWorking;
-  console.log(state);
   return state;
 });
 </script>
@@ -83,6 +84,20 @@ const isLinkTrayWorking = computed(() => {
       padding: 5px 10px;
       z-index: 0;
       width: fit-content;
+      max-width: 20vw;
+      overflow: hidden;
+      border: 1pt solid rgb(142, 142, 142);
+      box-shadow: 5px 9px 24px 0px rgba(0, 0, 0, 0.3);
+      -webkit-box-shadow: 5px 9px 24px 0px rgba(0, 0, 0, 0.3);
+      -moz-box-shadow: 5px 9px 24px 0px rgba(0, 0, 0, 0.3);
+
+      background: linear-gradient(
+        90deg,
+        rgb(167, 167, 167) 0%,
+        rgb(103, 103, 103) 76%,
+        rgb(167, 167, 167) 100%
+      );
+      border-radius: 5px;
       transform: translate(-100%, -80%);
       @keyframes moveRight {
         0% {
@@ -97,16 +112,16 @@ const isLinkTrayWorking = computed(() => {
         }
 
         17% {
-          transform: translate(10%, -20%);
+          transform: translate(10%, -10%);
         }
 
         100% {
-          transform: translate(30%, -20%); /* Ending position */
+          transform: translate(30%, -10%); /* Ending position */
         }
       }
       span {
         font-weight: 700;
-        font-size: 2vw;
+        font-size: 1.5vw;
       }
     }
   }

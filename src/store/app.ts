@@ -5,12 +5,15 @@ import { defineStore } from "pinia";
 export const useAppStore = defineStore("app", {
   state: () => ({
     isDarkMode: localStorage.getItem("darkMode") === "true", // Convert to boolean
-    originalLink: "www.google.com",
+    originalLink: "",
     linkCustomization: "",
     outputLink: "",
+    preparedLink: "",
+    baseLink: "localhost:3000",
     machineStates: {
       linkMachineWorking: false,
       snapMachineWorking: false,
+      snapMachineWaiting: false,
       snapMachineDone: false,
       linkTrayWorking: false,
     },
@@ -24,16 +27,18 @@ export const useAppStore = defineStore("app", {
       localStorage.setItem("darkMode", this.isDarkMode.toString());
     },
     resetMachineStates() {
-      this.machineStates.linkMachineWorking = true;
+      this.machineStates.linkMachineWorking = false;
       this.machineStates.snapMachineDone = false;
       this.machineStates.snapMachineWorking = false;
+      this.machineStates.snapMachineWaiting = false;
       this.machineStates.linkTrayWorking = false;
     },
     startLinkMachine() {
       this.resetMachineStates();
+      this.machineStates.linkMachineWorking = true;
       setTimeout(() => {
         this.machineStates.linkMachineWorking = false;
-        this.startSnapMachine();
+        this.machineStates.snapMachineWaiting = true;
       }, 5200);
     },
     startSnapMachine() {
@@ -42,16 +47,32 @@ export const useAppStore = defineStore("app", {
       setTimeout(() => {
         this.machineStates.snapMachineWorking = false;
         this.machineStates.snapMachineDone = true;
-        this.startLinkTray();
       }, 5200);
     },
     startLinkTray() {
       this.machineStates.linkTrayWorking = true;
     },
     async shortenRequest() {
-      if (this.originalLink)
-        return await apiService.shortenLink(this.originalLink, this.linkCustomization);
-      
+      if (this.preparedLink) {
+        console.log("this.linkCustomization", this.linkCustomization);
+        const res = await apiService.shortenLink(
+          this.preparedLink,
+          this.linkCustomization
+        );
+        this.outputLink = res;
+        return res;
+      }
+    },
+    async prepareLink(originalLink: string) {
+      this.originalLink = originalLink;
+      try {
+        const res = await apiService.prepareLink(this.originalLink);
+        this.preparedLink = res;
+        return res;
+      } catch (error: any) {
+        console.log("error", error.response.data.error);
+        throw new Error(error.response.data.error as string);
+      }
     },
   },
   getters: {

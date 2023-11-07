@@ -8,7 +8,7 @@
     <v-spacer></v-spacer>
     <v-toolbar-items>
       <v-btn icon @click="toggleDarkMode">
-        <v-icon>{{
+        <v-icon :color="isDarkMode ? 'white' : 'black'">{{
           isDarkMode ? "mdi-white-balance-sunny" : "mdi-moon-waning-crescent"
         }}</v-icon>
       </v-btn>

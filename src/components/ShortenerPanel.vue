@@ -1,52 +1,59 @@
 <template>
   <v-row class="shortener-panel-wrapper">
-    <v-col>
-      <v-row>
-        <v-col cols="12" class="d-flex justify-center">
-          <img
-            style="width: 100%; max-height: 150px; object-fit: contain"
-            src="logo.png"
-          />
-        </v-col>
-      </v-row>
-      <v-row class="d-flex justify-center" v-if="currentStep === 1">
-        <v-col cols="12" lg="6">
-          <!-- Wizard Step 1: Original Link -->
-          <v-form @submit.prevent="processLinkStep1">
-            <v-card-title class="headline"
-              >1-) Enter the URL you want to snap.</v-card-title
-            >
-            <v-card-subtitle class="headline"
-              >*This could be in any format as long as you are putting extension
-              end of it. Such as "myurl.com" "www.url.com".
-            </v-card-subtitle>
-            <v-text-field
-              v-model="originalLink"
-              label="Enter URL..."
-              outlined
-              class="my-4"
-            ></v-text-field>
-            <v-btn
-              color="primary"
-              type="submit"
-              :disabled="isButtonDisabled || isLoading"
-            >
-              {{ isLoading ? "Loading..." : "SNAP IT" }}
-            </v-btn>
-          </v-form>
-        </v-col>
-      </v-row>
+    <v-col class="d-flex justify-center align-center" cols="12" lg="12">
+      <img src="logo.png" alt="" />
+    </v-col>
 
-      <v-row class="d-flex justify-center">
-        <v-col cols="12" lg="6" v-if="currentStep === 2">
-          <!-- Wizard Step 2: Options -->
-          <v-form @submit.prevent="processLinkStep1">
+    <v-col cols="12" lg="6">
+      <v-card class="py-3 px-5" style="width: 100%; opacity: 0.8">
+        <v-row>
+          <v-col>
+            <v-alert v-if="errorText" type="error" outlined>
+              {{ errorText }}
+            </v-alert>
+          </v-col>
+        </v-row>
+        <v-row class="d-flex justify-center w-100" v-if="currentStep === 1">
+          <v-col>
+            <!-- Wizard Step 1: Original Link -->
+            <v-form @submit.prevent="processLinkStep1">
+              <v-card-title class="headline"
+                >1-) Enter the URL you want to snap.</v-card-title
+              >
+              <v-card-subtitle class="headline"
+                >*This could be in any format as long as you are putting
+                extension end of it. Such as "myurl.com" "www.url.com".
+              </v-card-subtitle>
+              <v-text-field
+                v-model="originalLink"
+                label="Enter URL..."
+                outlined
+                class="my-4"
+                @input="resetErrorText"
+                :rules="[(value) => !!value || 'Required']"
+                immediate
+              ></v-text-field>
+
+              <v-btn
+                color="primary"
+                type="submit"
+                :disabled="isButtonDisabled || isLoading"
+              >
+                {{ isLoading ? "Loading..." : "SNAP IT" }}
+              </v-btn>
+            </v-form>
+          </v-col>
+        </v-row>
+
+        <v-row class="d-flex justify-center w-100" v-if="currentStep === 2">
+          <v-col>
+            <!-- Wizard Step 2: Options -->
             <v-card-title class="headline"
               >2-) Make your link easier than random strings.</v-card-title
             >
             <v-card-subtitle class="headline"
               >Your link will be: www.linksnap.com/{{
-                customizedLink
+                customizedLink || shortenedLink
               }}</v-card-subtitle
             >
             <v-card-text>
@@ -55,6 +62,10 @@
                 label="Customize Link"
                 outlined
                 class="mb-4"
+                :rules="[
+                  (value) =>
+                    !/\s/.test(value) || 'Do not use spaces in customization.',
+                ]"
                 :disabled="isCustomizationDisabled || isLoading"
               ></v-text-field>
               <v-row style="padding-left: 10px; gap: 20px">
@@ -71,24 +82,39 @@
                 ></v-progress-circular>
               </v-row>
             </v-card-text>
-          </v-form>
-        </v-col>
-      </v-row>
+          </v-col>
+        </v-row>
 
-      <!-- Wizard Step 3: Shortened Link -->
-      <section v-if="currentStep === 3" class="mt-4" fill-height fluid>
-        <v-card-title class="headline">Shortened Link</v-card-title>
-        <v-card-text>
-          <div class="subtitle-1">{{ shortenedLink }}</div>
-        </v-card-text>
-      </section>
+        <!-- Wizard Step 3: Shortened Link -->
+        <v-row class="d-flex justify-center w-100" v-if="currentStep === 3">
+          <v-col class="text-center">
+            <v-card-title class="headline"
+              >Here is your snapped link</v-card-title
+            >
+            <v-card-text>
+              <h1>
+                <v-btn @click="outputLinkClickAction">{{ outputLink }}</v-btn>
+              </h1>
+            </v-card-text>
+            <v-row>
+              <v-col class="d-flex justify-center">
+                <div class="share-wrapper">
+                  <v-btn @click="copyToClipboard">Copy to clipboard</v-btn>
+                  <v-btn @click="startOver">Create Another</v-btn>
+                </div>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-card>
+
       <v-dialog v-model="skipDialog" max-width="400">
         <v-card>
           <v-card-title class="headline">Skip Options</v-card-title>
           <v-card-text>
             <p>
               If you skip custom link option, your link will appear as
-              <b>{{ shortenedLink }}</b>
+              <b>{{ outputLink }}</b>
             </p>
           </v-card-text>
           <v-card-actions>
@@ -102,71 +128,109 @@
 </template>
 
 <script setup lang="ts">
+import { useAppStore } from "@/store/app";
 import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
 
 const originalLink = ref("");
 const shortenedLink = ref("");
+const outputLink = computed(() => {
+  const generatedLink = customizedLink.value || shortenedLink.value;
+  return store.baseLink + "/" + generatedLink;
+});
 const customizedLink = ref("");
 const currentStep = ref(1);
 const isLoading = ref(false);
-
+const store = useAppStore();
 const skipDialog = ref(false);
+const router = useRouter();
+const errorText = ref("");
+const outputLinkClickAction = () => {
+  router.push(customizedLink.value || shortenedLink.value);
+};
 
 const openSkipDialog = () => {
   skipDialog.value = true;
 };
-
+const resetErrorText = () => {
+  errorText.value = ""; // Reset the error text when the user starts typing
+};
 const closeSkipDialog = () => {
   skipDialog.value = false;
 };
-const isButtonDisabled = computed(
-  () =>
-    isLoading.value || (currentStep.value === 1 && originalLink.value === "")
-);
+const isButtonDisabled = computed(() => isLoading.value);
 const isCustomizationDisabled = computed(
   () => isLoading.value || currentStep.value !== 2
 );
 
+const startOver = () => {
+  originalLink.value = "";
+  shortenedLink.value = "";
+  customizedLink.value = "";
+  currentStep.value = 1;
+
+  store.resetMachineStates();
+};
+const copyToClipboard = () => {
+  navigator.clipboard.writeText(shortenedLink.value);
+};
 const processLinkStep1 = async () => {
   // Simulate loading
   isLoading.value = true;
 
-  // Simulate API call to shorten link
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-
-  // Replace with your actual logic to shorten the link
-  shortenedLink.value = "YourShortenedLinkHere";
-
-  // Reset loading state and move to the next step
-  isLoading.value = false;
-  currentStep.value = 2;
+  try {
+    if (currentStep.value != 1) {
+      return false;
+    }
+    const prepareLink = await store.prepareLink(originalLink.value);
+    if (prepareLink) {
+      shortenedLink.value = prepareLink;
+      store.startLinkMachine();
+      setTimeout(() => {
+        isLoading.value = false;
+        currentStep.value = 2;
+      }, 5000);
+    } else {
+      isLoading.value = false;
+      originalLink.value = "";
+    }
+  } catch (error: any) {
+    isLoading.value = false;
+    errorText.value = error;
+  }
 };
 
 const applyOptions = async () => {
   // Simulate loading for applying options
   isLoading.value = true;
+  store.startSnapMachine();
+  store.linkCustomization = customizedLink.value;
 
-  // Simulate API call to apply options
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  const shortenLink = await store.shortenRequest();
+  console.log(customizedLink.value);
+  setTimeout(() => {
+    if (shortenLink) {
+      store.startLinkTray();
 
-  // Your actual logic for applying options here
-  // Move to the final step
-  currentStep.value = 3;
-  isLoading.value = false;
+      currentStep.value = 3;
+      isLoading.value = false;
+    }
+  }, 4000);
 };
 
 const skipOptions = async () => {
-  // Simulate loading for skipping options
-  isLoading.value = true;
-
   skipDialog.value = false;
-  // Simulate API call to skip options
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  isLoading.value = true;
+  store.startSnapMachine();
+  const shortenLink = await store.shortenRequest();
 
-  // Your actual logic for skipping options here
-  // Move to the final step
-  currentStep.value = 3;
-  isLoading.value = false;
+  setTimeout(() => {
+    if (shortenLink) {
+      store.startLinkTray();
+      currentStep.value = 3;
+      isLoading.value = false;
+    }
+  }, 5200);
 };
 </script>
 
@@ -181,7 +245,16 @@ const skipOptions = async () => {
   margin-top: 1rem;
 }
 .shortener-panel-wrapper {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
   z-index: 2 !important;
   position: relative;
+  margin-top: -50px;
+}
+.share-wrapper {
+  display: flex;
+  gap: 10px;
 }
 </style>

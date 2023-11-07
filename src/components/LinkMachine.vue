@@ -5,7 +5,7 @@
     </div>
     <div class="link-path">
       <div class="link-container" v-if="link">
-        <span> google.com</span>
+        <span> {{ link }}</span>
       </div>
     </div>
     <div class="structure-2"></div>
@@ -18,7 +18,7 @@ import { computed } from "vue";
 
 const appStore = useAppStore();
 
-const link = computed(() => appStore.originalLink);
+const link = computed(() => appStore.originalLink || "qeqwew");
 const isWorking = computed(() => {
   return appStore.machineStates.linkMachineWorking;
 });
@@ -29,11 +29,11 @@ const isWorking = computed(() => {
   width: 100%;
   height: 100%;
   position: relative;
-  &.on .link-path .link-container {
+  &.on .link-path {
     animation: moveRight 5s linear 1 forwards;
   }
   &.on .structure-1 .structure-door {
-    animation: openDoor 2.5s linear 1 forwards;
+    animation: openDoor 3s linear 1 forwards;
   }
 
   .structure-1 {
@@ -68,10 +68,10 @@ const isWorking = computed(() => {
           transform: rotate(0deg); /* Starting position, no rotation */
         }
         30% {
-          transform: rotate(-50deg); /* Ending position, fully rotated */
+          transform: rotate(-60deg); /* Ending position, fully rotated */
         }
         90% {
-          transform: rotate(-50deg); /* Ending position, fully rotated */
+          transform: rotate(-60deg); /* Ending position, fully rotated */
         }
         100% {
           transform: rotate(0deg);
@@ -100,23 +100,39 @@ const isWorking = computed(() => {
     left: 0;
     z-index: 0;
     bottom: 20%;
+    transform: translateX(-50%);
     overflow: hidden;
     .link-container {
-      width: 200px;
+      width: fit-content;
+      max-width: 20vw;
+      overflow: hidden;
+      position: relative;
       padding: 5px 10px;
       z-index: 0;
-      transform: translateX(-50%);
-      @keyframes moveRight {
-        0% {
-          transform: translateX(-50%); /* Starting position */
-        }
-        100% {
-          transform: translateX(300%); /* Ending position */
-        }
-      }
+      text-align: center;
+      border: 1pt solid black;
+      box-shadow: 5px 9px 24px 0px rgba(0, 0, 0, 0.3);
+      -webkit-box-shadow: 5px 9px 24px 0px rgba(0, 0, 0, 0.3);
+      -moz-box-shadow: 5px 9px 24px 0px rgba(0, 0, 0, 0.3);
+      background: linear-gradient(
+        90deg,
+        rgb(167, 167, 167) 0%,
+        rgb(103, 103, 103) 76%,
+        rgb(167, 167, 167) 100%
+      );
+      border-radius: 5px;
+
       span {
         font-weight: 700;
         font-size: 2vw;
+      }
+    }
+    @keyframes moveRight {
+      0% {
+        transform: translateX(-50%); /* Starting position */
+      }
+      100% {
+        transform: translateX(100%); /* Ending position */
       }
     }
   }

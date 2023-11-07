@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-theme-provider :theme="theme" with-background>
+    <v-theme-provider :theme="theme">
       <default-bar />
       <v-container class="container" :class="mobile ? '' : 'custom-padding-sm'">
         <default-view />

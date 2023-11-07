@@ -17,12 +17,6 @@ import { useAppStore } from "@/store/app";
 import { computed } from "vue";
 
 const appStore = useAppStore();
-const linkMachineState = computed(
-  () => appStore.machineStates.linkMachineWorking
-);
-const startLinkMachine = () => {
-  appStore.startLinkMachine();
-};
 </script>
 
 <style scoped lang="scss">
