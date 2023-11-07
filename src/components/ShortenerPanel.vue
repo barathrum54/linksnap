@@ -1,7 +1,7 @@
 <template>
   <v-row class="shortener-panel-wrapper">
     <v-col class="d-flex justify-center align-center" cols="12" lg="12">
-      <img src="logo.png" alt="" />
+      <img src="@/assets/logo.png" alt="" />
     </v-col>
 
     <v-col cols="12" lg="6">

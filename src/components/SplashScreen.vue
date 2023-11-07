@@ -1,6 +1,6 @@
 <template>
   <div class="splash-screen" v-if="show">
-    <img src="logo.png" alt="" />
+    <img src="@/assets/logo.png" alt="" />
     <div></div>
     <div></div>
   </div>

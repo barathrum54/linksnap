@@ -41,16 +41,16 @@
         ]"
       >
         <div class="gear">
-          <img src="gear.png" alt="" />
+          <img src="@/assets/gear.png" alt="" />
         </div>
         <div class="gear">
-          <img src="gear.png" alt="" />
+          <img src="@/assets/gear.png" alt="" />
         </div>
         <div class="gear">
-          <img src="gear.png" alt="" />
+          <img src="@/assets/gear.png" alt="" />
         </div>
         <div class="glass">
-          <img src="glass.png" alt="" />
+          <img src="@/assets/glass.png" alt="" />
         </div>
       </div>
     </div>
