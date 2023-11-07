@@ -2,7 +2,7 @@
 
 import axios from "axios";
 
-const API_BASE_URL = "https://linksnap-api-git-main-barathrum54.vercel.app/";
+const API_BASE_URL = "https://linksnap-api.vercel.app/";
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,

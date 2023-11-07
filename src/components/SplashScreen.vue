@@ -41,7 +41,7 @@ setTimeout(() => {
   animation-delay: 6s;
   img {
     position: absolute;
-    left: 1%;
+    left: 0;
     right: 0;
     top: 0;
     bottom: 0;
