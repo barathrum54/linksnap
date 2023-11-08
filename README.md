@@ -1,69 +1,39 @@
-# essentials
+# LinkSnap
 
-## Project setup
+LinkSnap is a modern link shortener application showcasing your Vue.js skills. It provides a quick and easy way to shorten long URLs, making them more user-friendly and shareable. This project is deployed on Vercel and works in tandem with its own API.
 
-```
-# yarn
-yarn
+![LinkSnap Logo](logo.png)
 
-# npm
-npm install
+## Demo
 
-# pnpm
-pnpm install
+You can check out the live demo of LinkSnap [here](https://linksnap-theta.vercel.app/).
 
-# bun 
-bun install
-```
+## Tech Stack
 
-### Compiles and hot-reloads for development
+- Vue.js 3
+- Vue Router 4
+- Vuetify 3
+- Axios
+- Core.js
+- Pinia
+- LRU Cache
+- Material Design Icons (MDI)
+- ESLint and Prettier for code quality
+- Vite for development and build
 
-```
-# yarn
-yarn dev
+## Features
 
-# npm
-npm run dev
+- Shorten long URLs to user-friendly links
+- Option to customize link parameter to create your own unique link
+- Easy-to-use and intuitive interface
+- CSS animations experiments implemented with pinia states
+- Modern UI components powered by Vuetify
+- Integration with LinkSnap API
 
-# pnpm
-pnpm dev
+## Contributions
 
-# bun 
-bun run dev
-```
+We welcome contributions to LinkSnap! If you'd like to contribute, please fork the repository and create a pull request.
 
-### Compiles and minifies for production
+## License
 
-```
-# yarn
-yarn build
-
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# bun 
-bun run build
-```
-
-### Lints and fixes files
-
-```
-# yarn
-yarn lint
-
-# npm
-npm run lint
-
-# pnpm
-pnpm lint
-
-# bun 
-bun run lint
-```
-
-### Customize configuration
-
-See [Configuration Reference](https://vitejs.dev/config/).
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
