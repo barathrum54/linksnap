@@ -119,7 +119,7 @@
           <v-card-text>
             <p>
               If you skip custom link option, your link will appear as
-              <b>{{ outputLink }}</b>
+              <b>{{ outputWithoutCustomization }}</b>
             </p>
           </v-card-text>
           <v-card-actions>
@@ -139,9 +139,12 @@ import { useRouter } from "vue-router";
 
 const originalLink = ref("");
 const shortenedLink = ref("");
+const outputWithoutCustomization = computed(() => {
+  return store.baseLink + shortenedLink.value;
+});
 const outputLink = computed(() => {
   const generatedLink = customizedLink.value || shortenedLink.value;
-  return store.baseLink + "/" + generatedLink;
+  return store.baseLink + generatedLink;
 });
 const customizedLink = ref("");
 const currentStep = ref(1);
@@ -233,18 +236,28 @@ const applyOptions = async () => {
 };
 
 const skipOptions = async () => {
-  skipDialog.value = false;
-  isLoading.value = true;
-  store.startSnapMachine();
-  const shortenLink = await store.shortenRequest();
+  try {
+    errorText.value = "";
+    isLoading.value = true;
+    store.linkCustomization = "";
+    customizedLink.value = "";
+    const shortenLink = await store.shortenRequest();
+    store.startSnapMachine();
+    closeSkipDialog();
+    setTimeout(() => {
+      if (shortenLink) {
+        store.startLinkTray();
 
-  setTimeout(() => {
-    if (shortenLink) {
-      store.startLinkTray();
-      currentStep.value = 3;
-      isLoading.value = false;
-    }
-  }, 5200);
+        currentStep.value = 3;
+        isLoading.value = false;
+      }
+    }, 4000);
+  } catch (error: any) {
+    isLoading.value = false;
+    console.log(error);
+
+    errorText.value = error;
+  }
 };
 </script>
 

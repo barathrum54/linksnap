@@ -9,7 +9,7 @@ export const useAppStore = defineStore("app", {
     linkCustomization: "",
     outputLink: "",
     preparedLink: "",
-    baseLink: process.env.VUE_APP_URL,
+    baseLink: import.meta.env.VITE_APP_URL,
     machineStates: {
       linkMachineWorking: false,
       snapMachineWorking: false,
