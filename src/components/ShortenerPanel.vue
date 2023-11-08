@@ -29,6 +29,7 @@
                 extension end of it. Such as "myurl.com" "www.url.com".
               </v-card-subtitle>
               <v-text-field
+                :disabled="isLoading"
                 v-model="originalLink"
                 label="Enter URL..."
                 outlined
@@ -62,6 +63,7 @@
             >
             <v-card-text>
               <v-text-field
+                :disabled="isLoading"
                 v-model="customizedLink"
                 label="Customize Link"
                 outlined
@@ -70,7 +72,6 @@
                   (value) =>
                     !/\s/.test(value) || 'Do not use spaces in customization.',
                 ]"
-                :disabled="isCustomizationDisabled || isLoading"
               ></v-text-field>
               <v-row style="padding-left: 10px; gap: 20px">
                 <v-btn @click="applyOptions" :disabled="isLoading">
@@ -200,26 +201,35 @@ const processLinkStep1 = async () => {
     }
   } catch (error: any) {
     isLoading.value = false;
+    console.log(error);
     errorText.value = error;
   }
 };
 
 const applyOptions = async () => {
   // Simulate loading for applying options
-  isLoading.value = true;
-  store.startSnapMachine();
-  store.linkCustomization = customizedLink.value;
 
-  const shortenLink = await store.shortenRequest();
+  try {
+    errorText.value = "";
+    isLoading.value = true;
+    store.linkCustomization = customizedLink.value;
+    const shortenLink = await store.shortenRequest();
+    store.startSnapMachine();
+    setTimeout(() => {
+      if (shortenLink) {
+        store.startLinkTray();
+
+        currentStep.value = 3;
+        isLoading.value = false;
+      }
+    }, 4000);
+  } catch (error: any) {
+    isLoading.value = false;
+    console.log(error);
+
+    errorText.value = error;
+  }
   console.log(customizedLink.value);
-  setTimeout(() => {
-    if (shortenLink) {
-      store.startLinkTray();
-
-      currentStep.value = 3;
-      isLoading.value = false;
-    }
-  }, 4000);
 };
 
 const skipOptions = async () => {

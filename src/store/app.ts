@@ -9,7 +9,7 @@ export const useAppStore = defineStore("app", {
     linkCustomization: "",
     outputLink: "",
     preparedLink: "",
-    baseLink: "https://linksnap-theta.vercel.app/",
+    baseLink: process.env.VUE_APP_URL,
     machineStates: {
       linkMachineWorking: false,
       snapMachineWorking: false,
@@ -53,14 +53,17 @@ export const useAppStore = defineStore("app", {
       this.machineStates.linkTrayWorking = true;
     },
     async shortenRequest() {
-      if (this.preparedLink) {
-        console.log("this.linkCustomization", this.linkCustomization);
-        const res = await apiService.shortenLink(
-          this.preparedLink,
-          this.linkCustomization
-        );
-        this.outputLink = res;
-        return res;
+      try {
+        if (this.preparedLink) {
+          const res = await apiService.shortenLink(
+            this.preparedLink,
+            this.linkCustomization
+          );
+          this.outputLink = res;
+          return res;
+        }
+      } catch (error: any) {
+        throw new Error(error.response.data.error as string);
       }
     },
     async prepareLink(originalLink: string) {
@@ -70,7 +73,6 @@ export const useAppStore = defineStore("app", {
         this.preparedLink = res;
         return res;
       } catch (error: any) {
-        console.log("error", error.response.data.error);
         throw new Error(error.response.data.error as string);
       }
     },

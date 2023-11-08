@@ -36,9 +36,9 @@ setTimeout(() => {
   width: 100vw;
   height: 100vh;
   z-index: 9999;
-  animation: slideOpen 1s forwards linear;
+  animation: slideOpen 0.8s forwards linear;
   background-color: transparent;
-  animation-delay: 6s;
+  animation-delay: 0.6s;
   img {
     position: absolute;
     left: 0;
@@ -49,7 +49,7 @@ setTimeout(() => {
     z-index: 99;
     object-fit: contain;
     animation: logoFadeOut 0.5s forwards linear;
-    animation-delay: 5.5s;
+    animation-delay: 0.5s;
   }
   div {
     width: 50%;

@@ -1,5 +1,5 @@
 <template>
-  <SplashScreen :timeout="7500" v-if="splashVisible" />
+  <SplashScreen :timeout="1500" v-if="splashVisible" />
   <router-view />
 </template>
 
