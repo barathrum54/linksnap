@@ -2,7 +2,7 @@
 
 LinkSnap is a modern link shortener application showcasing your Vue.js skills. It provides a quick and easy way to shorten long URLs, making them more user-friendly and shareable. This project is deployed on Vercel and works in tandem with its own API.
 
-![LinkSnap Logo](logo.png)
+![LinkSnap Logo](public/logo.png)
 
 ## Demo
 
